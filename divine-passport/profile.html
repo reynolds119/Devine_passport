@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Profile · Divine Passport</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="who">
+        <small>My profile</small>
+        <div id="nm">Profile</div>
+      </div>
+    </header>
+    <main>
+      <div class="card" style="text-align: center">
+        <label class="avatar-pick" id="pick" for="photo">Add photo</label
+        ><input type="file" id="photo" accept="image/*" hidden /><small
+          id="em"
+        ></small>
+      </div>
+      <form class="card" id="pf">
+        <label>Full name</label><input id="name" required /><label
+          >Phone number <small id="phone-opt" style="font-weight:400;color:var(--muted)">(optional)</small></label
+        ><input id="phone" type="tel" autocomplete="tel" /><label>Receive my scripture by</label
+        ><select id="channel"><option value="email">Email</option><option value="phone">Phone (SMS)</option></select><small id="channel-hint" style="display:block;color:var(--muted)"></small><label>Nationality</label
+        ><input id="nat" /><label>Occupation</label><input id="occ" /><button
+          class="btn"
+          style="margin-top: 14px"
+        >
+          Save profile
+        </button>
+      </form>
+      <form class="card" id="pw">
+        <label>New password (8+ chars, 1 capital, 1 number)</label
+        ><input type="password" id="np" required /><button
+          class="btn"
+          style="margin-top: 14px"
+        >
+          Change password
+        </button>
+      </form>
+      <div class="card">
+        <h3>Scripture alerts</h3>
+        <p>
+          Get a notification when your daily scripture arrives, even when the
+          app is closed.
+        </p>
+        <button class="btn gold" id="push" style="margin-top: 12px">
+          Enable notifications
+        </button>
+      </div>
+      <button class="btn ghost" id="logout2">LOGOUT</button>
+    </main>
+    <nav class="bottom">
+      <a href="home.html"><span>📖</span>Today</a
+      ><a href="saved.html"><span>⭐</span>Saved</a
+      ><a href="give.html"><span>♥</span>Give</a
+      ><a class="on" href="profile.html"><span>👤</span>Profile</a>
+    </nav>
+    <script type="module" src="js/profile.js"></script>
+  </body>
+</html>

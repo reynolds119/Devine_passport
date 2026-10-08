@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Signups · Divine Passport</title>
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <aside class="side">
+      <div class="brand">
+        <img src="../assets/images/logo.png" alt="Pure Fire Miracle Ministries International" />
+        <div>DIVINE <span>PASSPORT</span></div>
+      </div>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="scriptures.html">Scriptures</a>
+      <a href="signups.html" id="nav-signups" class="on">Signups</a>
+      <a href="#" id="logout">Logout</a>
+    </aside>
+    <main class="content">
+      <div class="bar">
+        <button class="burger" aria-label="Open navigation">☰</button>
+        <h1>New signups</h1>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="s-awaiting">–</b><span>Awaiting scripture</span></div>
+        <div class="stat"><b id="s-total">–</b><span>Total members</span></div>
+      </div>
+      <section class="panel">
+        <h3>Send a scripture to new members</h3>
+        <p class="hint">
+          Each member receives the scripture by the channel they chose when they
+          signed up: email, or SMS to their phone number. Members who are
+          already sent a scripture drop out of the “Awaiting” list.
+        </p>
+        <div class="send-bar">
+          <select id="scripture" aria-label="Scripture to send">
+            <option value="">Current broadcast</option>
+          </select>
+          <button class="btn ghost" id="select-all" type="button">Select all</button>
+          <button class="btn" id="send-selected" type="button" disabled>Send to selected</button>
+        </div>
+        <div class="tabs">
+          <button class="btn sm ghost on" type="button" data-filter="awaiting">Awaiting</button>
+          <button class="btn sm ghost" type="button" data-filter="all">All members</button>
+        </div>
+        <div id="list"><div class="empty">Loading signups…</div></div>
+      </section>
+    </main>
+    <script type="module">
+      import { signups } from "./js/admin.js";
+      signups();
+    </script>
+  </body>
+</html>

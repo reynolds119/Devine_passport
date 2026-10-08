@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin · Divine Passport</title>
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <aside class="side">
+      <div class="brand">
+        <img src="../assets/images/logo.png" alt="Pure Fire Miracle Ministries International" />
+        <div>DIVINE <span>PASSPORT</span></div>
+      </div>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="scriptures.html">Scriptures</a>
+      <a href="signups.html" id="nav-signups">Signups</a>
+      <a href="#" id="logout">Logout</a>
+    </aside>
+    <main class="content">
+      <div class="bar">
+        <button class="burger" aria-label="Open navigation">☰</button>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="s1">–</b><span>Members</span></div>
+        <div class="stat"><b id="s2">–</b><span>Active scriptures</span></div>
+        <div class="stat"><b id="s3">–</b><span>Delivered today</span></div>
+        <div class="stat"><b id="s4">–</b><span>Feedback received</span></div>
+        <a class="stat" href="signups.html"><b id="s5">–</b><span>New signups awaiting scripture</span></a>
+      </div>
+      <section class="panel" style="margin-bottom: 16px">
+        <h3>Invite a member</h3>
+        <form
+          id="invite-member"
+          style="display: grid; gap: 10px; max-width: 620px"
+        >
+          <label for="invite-name">Full name</label>
+          <input
+            id="invite-name"
+            name="full_name"
+            autocomplete="name"
+            maxlength="120"
+            required
+          />
+          <label for="invite-email">Email</label>
+          <input
+            id="invite-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            required
+          />
+          <label for="invite-nationality">Nationality</label>
+          <input
+            id="invite-nationality"
+            name="nationality"
+            maxlength="120"
+            required
+          />
+          <label for="invite-occupation">Occupation</label>
+          <input
+            id="invite-occupation"
+            name="occupation"
+            maxlength="120"
+            required
+          />
+          <button class="btn" type="submit">Send invitation</button>
+        </form>
+      </section>
+      <section class="panel" style="margin-bottom: 16px">
+        <h3>Manage admin access</h3>
+        <p class="hint">
+          Promote approved accounts to admin or remove their admin access.
+          There is no five-admin limit; keep at least one approved admin account.
+        </p>
+        <div id="admin-role-count" class="hint">Loading approved accounts…</div>
+        <div id="admin-user-list"></div>
+      </section>
+      <section class="panel" style="margin-bottom: 16px">
+        <h3>Foreign-currency bank instructions</h3>
+        <p class="hint">
+          Active account details are shown to donors who choose a bank transfer.
+        </p>
+        <form id="wire-account-form" class="wire-account-form">
+          <label for="wire-currency">Currency</label>
+          <select id="wire-currency" name="currency" required>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <label for="wire-beneficiary">Beneficiary name</label>
+          <input
+            id="wire-beneficiary"
+            name="beneficiary_name"
+            maxlength="160"
+            required
+          />
+          <label for="wire-bank">Bank name</label>
+          <input id="wire-bank" name="bank_name" maxlength="160" required />
+          <label for="wire-account-number">Account number</label>
+          <input
+            id="wire-account-number"
+            name="account_number"
+            maxlength="80"
+          />
+          <label for="wire-iban">IBAN</label>
+          <input id="wire-iban" name="iban" maxlength="80" />
+          <label for="wire-swift">SWIFT / BIC</label>
+          <input id="wire-swift" name="swift_bic" maxlength="20" />
+          <label for="wire-routing">Routing number</label>
+          <input id="wire-routing" name="routing_number" maxlength="40" />
+          <label for="wire-address">Bank address</label>
+          <textarea
+            id="wire-address"
+            name="bank_address"
+            rows="2"
+            maxlength="400"
+          ></textarea>
+          <label for="wire-instructions">Transfer instructions</label>
+          <textarea
+            id="wire-instructions"
+            name="payment_instructions"
+            rows="3"
+            maxlength="800"
+          ></textarea>
+          <label class="wire-active"
+            ><input id="wire-active" name="is_active" type="checkbox" checked />
+            Show donors this account</label
+          >
+          <button class="btn" type="submit">Save bank instructions</button>
+        </form>
+        <div id="wire-account-list"></div>
+      </section>
+      <section class="panel" style="margin-bottom: 16px">
+        <h3>Bank transfers awaiting review</h3>
+        <div id="wire-transfer-list"></div>
+      </section>
+      <section class="panel">
+        <h3>Latest feedback</h3>
+        <div id="fb"></div>
+      </section>
+    </main>
+    <script type="module">
+      import { dashboard } from "./js/admin.js";
+      dashboard();
+    </script>
+  </body>
+</html>

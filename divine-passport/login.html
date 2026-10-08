@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Login · Divine Passport</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="auth">
+      <img
+        class="logo"
+        src="assets/images/logo.png"
+        alt="Pure Fire Miracle Ministries International"
+      />
+      <h2>Welcome Back</h2>
+      <p class="sub">Sign in to your account</p>
+      <div class="msg" id="pend" hidden>
+        Your registration is awaiting admin approval.
+      </div>
+      <form id="f">
+        <label>Email or phone number</label
+        ><input type="text" id="email" required autocomplete="username" /><label
+          >Password</label
+        ><input
+          type="password"
+          id="pw"
+          required
+          autocomplete="current-password"
+        />
+        <button class="btn" id="go">LOGIN</button>
+      </form>
+      <div class="links">
+        <a href="#" id="forgot">Forgot password?</a
+        ><a href="register.html">Create account</a>
+      </div>
+    </div>
+    <div class="overlay" id="ov" hidden>
+      <div id="spin" class="ios"></div>
+      <div id="ok" hidden>
+        <svg viewBox="0 0 52 52" width="92">
+          <circle
+            cx="26"
+            cy="26"
+            r="24"
+            fill="none"
+            stroke="#34c759"
+            stroke-width="3"
+            class="ring"
+          />
+          <path
+            d="M14 27l8 8 16-17"
+            fill="none"
+            stroke="#34c759"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="tick"
+          />
+        </svg>
+        <h3>Signed in successfully</h3>
+        <p>Opening your scripture…</p>
+      </div>
+      <p id="ovt">Signing you in…</p>
+    </div>
+    <script type="module">
+      import { authRedirectUrl, login } from "./js/auth.js";
+      import { supabase } from "./js/supabase.js";
+      import { unlockAudio } from "./js/sound.js";
+      import { $, toast, busy } from "./js/utils.js";
+      if (location.search.includes("pending")) $("#pend").hidden = false;
+      $("#f").onsubmit = async (e) => {
+        e.preventDefault();
+        void unlockAudio().catch((error) =>
+          console.warn("Could not prepare scripture reveal sound.", error),
+        );
+        busy($("#go"), true);
+        $("#ov").hidden = false;
+        try {
+          const p = await login($("#email").value.trim(), $("#pw").value);
+          $("#spin").hidden = true;
+          $("#ovt").hidden = true;
+          $("#ok").hidden = false;
+          setTimeout(
+            () =>
+              location.replace(
+                p.role === "admin" ? "admin/dashboard.html" : "home.html",
+              ),
+            1000,
+          );
+        } catch (err) {
+          $("#ov").hidden = true;
+          toast(err.message || "Could not sign in. Please try again.", "error");
+          busy($("#go"), false);
+        }
+      };
+      $("#forgot").onclick = async (e) => {
+        e.preventDefault();
+        const m = $("#email").value.trim();
+        if (!m)
+          return toast(
+            "Enter your email address to request a password reset",
+            "error",
+          );
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m))
+          return toast(
+            "Password reset is available by email. Contact an administrator if you have a phone-only account.",
+            "error",
+          );
+        try {
+          const redirectTo = authRedirectUrl("reset-password.html");
+          const { error } = await supabase.auth.resetPasswordForEmail(
+            m,
+            redirectTo ? { redirectTo } : undefined,
+          );
+          if (error) throw error;
+          toast(
+            "If that account exists, a password reset link has been sent.",
+            "success",
+          );
+        } catch (error) {
+          toast(error.message, "error");
+        }
+      };
+    </script>
+  </body>
+</html>

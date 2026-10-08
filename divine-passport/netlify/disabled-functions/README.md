@@ -1,0 +1,1 @@
+This directory is intentionally empty. Application backend functions run on Supabase.

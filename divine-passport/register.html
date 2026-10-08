@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Sign up · Divine Passport</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="auth">
+      <img
+        class="logo"
+        src="assets/images/logo.png"
+        alt="Pure Fire Miracle Ministries International"
+      />
+      <h2>Create your account</h2>
+      <p class="sub">Receive a scripture made for you</p>
+      <form id="f" novalidate>
+        <label class="avatar-pick" id="pick" for="photo">Add photo</label
+        ><input type="file" id="photo" accept="image/*" hidden />
+        <label>Full name</label><input id="name" required autocomplete="name" />
+        <label
+          >Email
+          <small id="email-opt" style="font-weight: 400; color: var(--muted)"
+            >(required for email delivery)</small
+          ></label
+        ><input type="email" id="email" autocomplete="email" />
+        <div class="two">
+          <div>
+            <label>Nationality</label
+            ><input id="nat" list="nats" required /><datalist id="nats">
+              <option>Ghanaian</option>
+              <option>Nigerian</option>
+              <option>Togolese</option>
+              <option>Ivorian</option>
+              <option>Kenyan</option>
+              <option>South African</option>
+              <option>British</option>
+              <option>American</option>
+            </datalist>
+          </div>
+          <div><label>Occupation</label><input id="occ" required /></div>
+        </div>
+        <label
+          >Phone number
+          <small id="phone-opt" style="font-weight: 400; color: var(--muted)"
+            >(optional)</small
+          ></label
+        ><input
+          type="tel"
+          id="phone"
+          autocomplete="tel"
+          placeholder="+233 24 123 4567"
+        />
+        <label>Where do you want to receive your scripture?</label>
+        <div class="choice" role="radiogroup" aria-label="Scripture delivery">
+          <label class="opt"
+            ><input type="radio" name="channel" value="email" checked /><span
+              >Email</span
+            ></label
+          ><label class="opt"
+            ><input type="radio" name="channel" value="phone" /><span
+              >Phone (SMS)</span
+            ></label
+          >
+        </div>
+        <label
+          >Password
+          <small style="font-weight: 400; color: var(--muted)"
+            >(8+ chars, 1 capital, 1 number)</small
+          ></label
+        ><input type="password" id="pw" required autocomplete="new-password" />
+        <label>Confirm password</label
+        ><input
+          type="password"
+          id="pw2"
+          required
+          autocomplete="new-password"
+        /><small id="hint" style="color: #c9302c"></small>
+        <button class="btn" id="go">SIGN UP</button>
+      </form>
+      <div class="links">
+        <a href="login.html">Already have an account? Login</a>
+      </div>
+    </div>
+    <div class="overlay" id="ov" hidden>
+      <div id="spin" class="ios"></div>
+      <div id="ok" hidden>
+        <svg viewBox="0 0 52 52" width="92">
+          <circle
+            cx="26"
+            cy="26"
+            r="24"
+            fill="none"
+            stroke="#34c759"
+            stroke-width="3"
+            class="ring"
+          />
+          <path
+            d="M14 27l8 8 16-17"
+            fill="none"
+            stroke="#34c759"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="tick"
+          />
+        </svg>
+        <h3 id="success-title">Successfully signed up</h3>
+        <p id="success-message">Preparing your account…</p>
+      </div>
+      <div id="phone-confirm" hidden>
+        <h3>Verify your phone</h3>
+        <p id="phone-confirm-message">Enter the code sent by SMS.</p>
+        <form id="phone-verify-form">
+          <label for="sms-code">Verification code</label
+          ><input
+            id="sms-code"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            required
+          /><button class="btn" id="verify-phone-submit">Verify phone</button>
+        </form>
+      </div>
+      <p id="ovt">Creating your account…</p>
+    </div>
+    <script type="module">
+      import { register, validPassword, verifyPhoneSignup } from "./js/auth.js";
+      import { unlockAudio } from "./js/sound.js";
+      import { $, toast, busy } from "./js/utils.js";
+      let pendingPhone = "";
+      let pendingPhoto = null;
+      for (let i = 0; i < 12; i++) {
+        const s = document.createElement("i");
+        s.style.transform = `rotate(${i * 30}deg)`;
+        s.style.animationDelay = `${-(1 - i / 12)}s`;
+        $("#spin").append(s);
+      }
+      $("#photo").onchange = (e) => {
+        const f = e.target.files[0];
+        if (f) {
+          $("#pick").style.backgroundImage = `url(${URL.createObjectURL(f)})`;
+          $("#pick").textContent = "";
+        }
+      };
+      const channel = () =>
+        document.querySelector('input[name="channel"]:checked').value;
+      const syncContactRequirements = () => {
+        const sms = channel() === "phone";
+        $("#phone").required = sms;
+        $("#phone-opt").textContent = sms ? "(required for SMS)" : "(optional)";
+        $("#email").required = !sms;
+        $("#email-opt").textContent = sms
+          ? "(optional for SMS signup)"
+          : "(required for email delivery)";
+      };
+      document
+        .querySelectorAll('input[name="channel"]')
+        .forEach((r) => (r.onchange = syncContactRequirements));
+      syncContactRequirements();
+      $("#pw2").oninput = $("#pw").oninput = () => {
+        $("#hint").textContent =
+          $("#pw2").value && $("#pw").value !== $("#pw2").value
+            ? "Passwords do not match"
+            : "";
+      };
+      $("#f").onsubmit = async (e) => {
+        e.preventDefault();
+        const v = (id) => $("#" + id).value.trim();
+        if (!v("name") || !v("nat") || !v("occ"))
+          return toast("Please fill in all required fields", "error");
+        if (channel() === "email" && !v("email"))
+          return toast(
+            "Enter your email address to receive scriptures by email",
+            "error",
+          );
+        if (v("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")))
+          return toast("Enter a valid email address", "error");
+        if (channel() === "phone" && !v("phone"))
+          return toast(
+            "Enter your phone number to receive scriptures by phone",
+            "error",
+          );
+        if (!validPassword($("#pw").value))
+          return toast(
+            "Password needs 8+ characters, a capital letter and a number",
+            "error",
+          );
+        if ($("#pw").value !== $("#pw2").value)
+          return toast("Passwords do not match", "error");
+        void unlockAudio().catch((error) =>
+          console.warn("Could not prepare scripture reveal sound.", error),
+        );
+        $("#ov").hidden = false;
+        const t0 = Date.now();
+        try {
+          const photo = $("#photo").files[0];
+          const result = await register(
+            {
+              email: v("email"),
+              password: $("#pw").value,
+              meta: {
+                full_name: v("name"),
+                phone: v("phone"),
+                delivery_channel: channel(),
+                nationality: v("nat"),
+                occupation: v("occ"),
+              },
+            },
+            photo,
+          );
+          await new Promise((r) =>
+            setTimeout(r, Math.max(0, 1200 - (Date.now() - t0))),
+          );
+          if (result.confirmationRequired && result.channel === "phone") {
+            $("#spin").hidden = true;
+            $("#ovt").hidden = true;
+            $("#phone-confirm").hidden = false;
+            $("#phone-confirm-message").textContent =
+              `Enter the verification code sent to ${result.phone}.`;
+            pendingPhone = result.phone;
+            pendingPhoto = photo;
+            return;
+          }
+          $("#spin").hidden = true;
+          $("#ovt").hidden = true;
+          $("#ok").hidden = false;
+          if (result.signedIn) {
+            $("#success-title").textContent = "Signed in successfully";
+            $("#success-message").textContent = "Opening your scripture…";
+            setTimeout(
+              () =>
+                location.replace(
+                  result.profile.role === "admin"
+                    ? "admin/dashboard.html"
+                    : "home.html",
+                ),
+              1000,
+            );
+          } else if (result.confirmationRequired) {
+            $("#success-title").textContent = "Confirm your email";
+            $("#success-message").textContent =
+              "Use the link we sent to your email, then sign in.";
+            setTimeout(() => location.replace("login.html"), 4000);
+          } else if (result.pendingApproval) {
+            $("#success-title").textContent = "Account created";
+            $("#success-message").textContent =
+              "Your account is awaiting admin approval.";
+            setTimeout(() => location.replace("login.html?pending=1"), 2200);
+          } else {
+            $("#success-title").textContent = "Account created";
+            $("#success-message").textContent =
+              "Sign in with your " +
+              (v("email") ? "email address" : "phone number") +
+              " and password.";
+            setTimeout(() => location.replace("login.html"), 3000);
+          }
+        } catch (err) {
+          $("#ov").hidden = true;
+          toast(err.message, "error");
+        }
+      };
+      $("#phone-verify-form").onsubmit = async (e) => {
+        e.preventDefault();
+        busy($("#verify-phone-submit"), true);
+        try {
+          const profile = await verifyPhoneSignup(
+            pendingPhone,
+            $("#sms-code").value.trim(),
+            pendingPhoto,
+          );
+          $("#phone-confirm").hidden = true;
+          $("#ok").hidden = false;
+          $("#success-title").textContent = "Phone verified";
+          $("#success-message").textContent = "Opening your scripture…";
+          setTimeout(
+            () =>
+              location.replace(
+                profile.role === "admin" ? "admin/dashboard.html" : "home.html",
+              ),
+            1000,
+          );
+        } catch (error) {
+          toast(error.message, "error");
+        } finally {
+          busy($("#verify-phone-submit"), false);
+        }
+      };
+    </script>
+  </body>
+</html>

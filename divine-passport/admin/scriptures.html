@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin · Divine Passport</title>
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body>
+    <aside class="side">
+      <div class="brand">
+        <img src="../assets/images/logo.png" alt="Pure Fire Miracle Ministries International" />
+        <div>DIVINE <span>PASSPORT</span></div>
+      </div>
+      <a href="dashboard.html">Dashboard</a
+      ><a href="scriptures.html">Scriptures</a
+      ><a href="signups.html" id="nav-signups">Signups</a
+      ><a href="#" id="logout">Logout</a>
+    </aside>
+    <div class="content">
+      <div class="bar">
+        <button class="burger">☰</button>
+        <h1>Scriptures</h1>
+      </div>
+      <div class="panel" style="margin-bottom: 16px">
+        <h3>Broadcast scripture</h3>
+        <p class="hint">
+          Members keep the current broadcast scripture until you broadcast another.
+          New broadcasts appear the next time a member opens the app.
+        </p>
+        <div id="current-broadcast" class="hint">Loading current broadcast…</div>
+        <form id="broadcast" style="display: grid; gap: 10px">
+          <select id="broadcast-scripture" required>
+            <option value="">Choose an active scripture</option>
+          </select>
+          <button class="btn">Broadcast to all members</button>
+        </form>
+      </div>
+      <div class="panel" style="margin-bottom: 16px">
+        <h3>Upload</h3>
+        <form id="add" style="display: grid; gap: 10px">
+          <input id="ref" placeholder="Reference e.g. Psalm 23:1" /><input
+            id="body"
+            placeholder="Scripture text"
+          /><input id="note" placeholder="Short reflection (optional)" />
+          <textarea
+            id="bulk"
+            rows="4"
+            placeholder="Or bulk: one per line — Reference | Text | Reflection"
+            style="
+              padding: 12px;
+              border: 1.5px solid #dbe2f2;
+              border-radius: 10px;
+              font: inherit;
+            "
+          ></textarea
+          ><button class="btn">Upload</button>
+        </form>
+      </div>
+      <div class="panel">
+        <h3>Library</h3>
+        <p class="hint">Add the church-approved scriptures here, then select one above to broadcast to all members.</p>
+        <div id="list"></div>
+      </div>
+    </div>
+    <script type="module">
+      import { scriptures } from "./js/admin.js";
+      scriptures();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#13264a" />
+    <title>Give · Divine Passport</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="who">
+        <small>Divine Passport</small>
+        <div>Give</div>
+      </div>
+      <span class="day-pill">One-time gift</span>
+    </header>
+    <main>
+      <section class="card give-card">
+        <span class="tag">Support the ministry</span>
+        <h2>Help share a word of hope.</h2>
+        <p>
+          Your gift supports the work of sharing scripture and daily
+          encouragement through Divine Passport.
+        </p>
+        <form id="donate-form">
+          <fieldset class="give-methods">
+            <legend>How would you like to give?</legend>
+            <label class="payment-option">
+              <input
+                type="radio"
+                name="payment_method"
+                value="paystack"
+                checked
+              />
+              <span
+                ><b>Paystack checkout · GHS</b
+                ><small
+                  >Cards, mobile money, and available Ghana bank transfer.
+                  Overseas card providers convert to GHS.</small
+                ></span
+              >
+            </label>
+            <label class="payment-option">
+              <input
+                id="wire-payment-method"
+                type="radio"
+                name="payment_method"
+                value="bank_transfer"
+              />
+              <span
+                ><b>International bank transfer</b
+                ><small
+                  >Manual wire instructions in USD, GBP, or EUR. We confirm
+                  receipt before recording your gift.</small
+                ></span
+              >
+            </label>
+          </fieldset>
+          <div id="wire-currency-wrap" hidden>
+            <label for="wire-currency">Transfer currency</label>
+            <select id="wire-currency" name="wire_currency" required>
+              <option value="">Loading available accounts…</option>
+            </select>
+            <small id="wire-availability" role="status"></small>
+          </div>
+          <fieldset class="give-amounts" id="ghs-quick-amounts">
+            <legend>Choose an amount</legend>
+            <div class="give-options">
+              <button
+                class="amount-choice"
+                type="button"
+                data-amount="20"
+                aria-pressed="false"
+              >
+                GHS 20
+              </button>
+              <button
+                class="amount-choice"
+                type="button"
+                data-amount="50"
+                aria-pressed="false"
+              >
+                GHS 50
+              </button>
+              <button
+                class="amount-choice"
+                type="button"
+                data-amount="100"
+                aria-pressed="false"
+              >
+                GHS 100
+              </button>
+            </div>
+          </fieldset>
+          <label for="amount"
+            ><span id="amount-label">Amount in GHS</span></label
+          >
+          <input
+            id="amount"
+            name="amount"
+            type="number"
+            inputmode="decimal"
+            min="1"
+            max="100000"
+            step="0.01"
+            placeholder="Other amount"
+            required
+          />
+          <label for="donor-name"
+            >Name <span class="optional">(optional)</span></label
+          >
+          <input
+            id="donor-name"
+            name="donor_name"
+            autocomplete="name"
+            maxlength="120"
+          />
+          <label for="donor-email">Email for your payment</label>
+          <input
+            id="donor-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            required
+          />
+          <button class="btn gold" id="checkout" type="submit">
+            Continue to secure checkout
+          </button>
+        </form>
+        <p class="give-secure" id="payment-note">
+          Paystack hosts the checkout. Your payment details are never entered on
+          this site; your card issuer handles currency conversion.
+        </p>
+      </section>
+      <section class="card give-result" id="wire-details" hidden>
+        <span class="tag">Bank transfer</span>
+        <h2>Transfer your gift</h2>
+        <p id="wire-amount"></p>
+        <dl class="wire-details-list" id="wire-bank-details"></dl>
+        <p class="give-secure">
+          Use the transfer reference exactly as shown. Your gift is recorded
+          only after we verify the funds arrived.
+        </p>
+        <form id="wire-report-form">
+          <label for="transfer-reference">Your bank transfer reference</label>
+          <input id="transfer-reference" maxlength="120" required />
+          <button class="btn gold" type="submit">I sent the transfer</button>
+          <p id="wire-report-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+      <section
+        class="card give-result"
+        id="give-result"
+        role="status"
+        aria-live="polite"
+        hidden
+      >
+        <span class="tag" id="result-tag">Payment update</span>
+        <h2 id="result-title">Checking your payment</h2>
+        <p id="result-message">Please wait while we verify your payment.</p>
+        <button class="btn ghost" id="verify-again" type="button" hidden>
+          Check again
+        </button>
+        <a class="btn ghost" href="give.html">Make another gift</a>
+      </section>
+    </main>
+    <nav class="bottom" aria-label="Main navigation">
+      <a href="home.html"><span>📖</span>Today</a>
+      <a href="saved.html"><span>⭐</span>Saved</a>
+      <a class="on" href="give.html" aria-current="page"><span>♥</span>Give</a>
+      <a href="profile.html"><span>👤</span>Profile</a>
+    </nav>
+    <script type="module" src="js/give.js"></script>
+  </body>
+</html>

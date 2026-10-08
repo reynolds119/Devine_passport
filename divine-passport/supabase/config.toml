@@ -1,0 +1,22 @@
+project_id = "sezhdqityobfnkpoqslw"
+
+[functions.create-wire-transfer]
+verify_jwt = false
+
+[functions.initialize-donation]
+verify_jwt = false
+
+[functions.verify-donation]
+verify_jwt = false
+
+[functions.report-wire-transfer]
+verify_jwt = false
+
+[functions.paystack-webhook]
+verify_jwt = false
+
+[functions.push-key]
+verify_jwt = false
+
+[functions.send-daily]
+verify_jwt = false

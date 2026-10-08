@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Login · Divine Passport</title>
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body class="login">
+    <form id="f">
+      <img
+        src="../assets/images/logo.png"
+        alt="Pure Fire Miracle Ministries International"
+      />
+      <h2>Divine Passport</h2>
+      <small>Admin Portal</small>
+      <input type="email" id="email" placeholder="Email" required /><input
+        type="password"
+        id="pw"
+        placeholder="Password"
+        required
+      /><button class="btn">Login</button>
+      <div class="links"><a href="#" id="forgot">Forgot password?</a></div>
+    </form>
+    <script type="module">
+      import { authRedirectUrl, login } from "../js/auth.js";
+      import { supabase } from "../js/supabase.js";
+      import { $, toast } from "../js/utils.js";
+      $("#f").onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const p = await login($("#email").value.trim(), $("#pw").value);
+          if (p.role !== "admin") {
+            await supabase.auth.signOut();
+            throw new Error("Not an admin account.");
+          }
+          location.replace("dashboard.html");
+        } catch (err) {
+          toast(err.message, "error");
+        }
+      };
+      $("#forgot").onclick = async (e) => {
+        e.preventDefault();
+        const email = $("#email").value.trim();
+        if (!email) return toast("Enter your email first", "error");
+        try {
+          const redirectTo = authRedirectUrl("reset-password.html");
+          const { error } = await supabase.auth.resetPasswordForEmail(
+            email,
+            redirectTo ? { redirectTo } : undefined,
+          );
+          if (error) throw error;
+          toast(
+            "If that account exists, a password reset link has been sent.",
+            "success",
+          );
+        } catch (error) {
+          toast(error.message, "error");
+        }
+      };
+    </script>
+  </body>
+</html>
